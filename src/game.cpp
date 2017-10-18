@@ -41,10 +41,18 @@ int handle_event(Game &game, SDL_Event &event) {
     return 0;
 }
 
+int update(Game &game) {
+    return 0;
+}
+
+int draw(Game &game) {
+    return 0;
+}
+
+#define CHECKED(expr) { int status = expr; if (status != 0) return status; }
+
 int mainloop(Game &game) {
-    int status = 0;
-    status = init(game);
-    if (status != 0) return status;
+    CHECKED(init(game));
 
     SDL_Event event;
     uint64_t old_ticks = 0;
@@ -55,9 +63,11 @@ int mainloop(Game &game) {
         old_ticks = now;
 
         while (SDL_PollEvent(&event)) {
-            status = handle_event(game, event);
-            if (status != 0) return status;
+            CHECKED(handle_event(game, event));
         }
+
+        CHECKED(update(game));
+        CHECKED(draw(game));
     }
 
     return 0;
