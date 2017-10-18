@@ -56,18 +56,30 @@ int mainloop(Game &game) {
 
     SDL_Event event;
     uint64_t old_ticks = 0;
+    float accumulator = 0.0f;
 
     while (game.running) {
         uint64_t now = SDL_GetPerformanceCounter();
         float dt = (now - old_ticks) / (float)SDL_GetPerformanceFrequency();
         old_ticks = now;
 
+        /* The game update took too long e.g. the window was not focused */
+        if (dt > 0.1f) {
+            dt = game.simulation_dt;
+        }
+
         while (SDL_PollEvent(&event)) {
             CHECKED(handle_event(game, event));
         }
 
-        CHECKED(update(game));
+        accumulator += dt;
+        while (accumulator >= game.simulation_dt) {
+            CHECKED(update(game));
+            accumulator -= game.simulation_dt;
+        }
+
         CHECKED(draw(game));
+        SDL_Delay(1);
     }
 
     return 0;
