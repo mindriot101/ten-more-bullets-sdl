@@ -1,6 +1,6 @@
 SOURCES := $(wildcard src/*.cpp)
 OBJECTS := $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
-CFLAGS := $(shell pkg-config --cflags sdl2)
+CFLAGS := -Iinclude $(shell pkg-config --cflags sdl2)
 LDFLAGS := $(shell pkg-config --libs sdl2)
 COMMON := -g -O2
 

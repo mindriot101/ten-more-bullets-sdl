@@ -1,6 +1,7 @@
 #include <cstdio>
+#include "game.h"
 
 int main() {
-    printf("Hello world!\n");
-    return 0;
+    Game game;
+    return mainloop(game);
 }
