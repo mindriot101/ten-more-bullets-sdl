@@ -3,13 +3,17 @@ OBJECTS := $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
 DEPS := $(OBJECTS:.o=.d)
 CFLAGS := -Iinclude $(shell pkg-config --cflags sdl2) -MMD -MP
 LDFLAGS := $(shell pkg-config --libs sdl2)
-COMMON := -g -O2 -std=c++11 -Wall -Wextra
+OPT := -O2
+COMMON := -g $(OPT) -std=c++11 -Wall -Wextra
 
 
 all: bin/game
 
 run: bin/game
 	@$<
+
+debug: bin/game
+	lldb $<
 
 bin/game: $(OBJECTS)
 	$(CXX) $(LDFLAGS) $(COMMON) $(OBJECTS) -o $@
@@ -25,6 +29,6 @@ clean:
 
 -include $(DEPS)
 
-.PHONY: all run clean
+.PHONY: all run clean debug
 
 .SUFFIXES: .cpp .o
