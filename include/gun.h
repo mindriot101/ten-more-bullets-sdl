@@ -4,10 +4,16 @@
 #include "key_press.h"
 #include "bullet.h"
 
-struct Gun {
-    void update(float dt, bool *key_map);
+#define N_BULLETS 2
 
-    Bullet bullets[256];
+struct Gun {
+    Gun();
+    void update(float dt, bool *key_map);
+    void fire(float dt);
+    void cleanup();
+
+    Bullet bullets[N_BULLETS];
+    bool allocated[N_BULLETS];
     int allocated_bullets = 0;
 
     bool fired_last_frame = false;
