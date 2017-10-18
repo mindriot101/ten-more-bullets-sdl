@@ -1,4 +1,5 @@
 #include "game.h"
+#include "rectangle.h"
 
 enum struct KeyPress {
     Default,
@@ -53,6 +54,14 @@ static int init(Game &game) {
     for (uint32_t i=0; i<press_to_index(KeyPress::TOTAL); i++) {
         KeyMap[i] = false;
     }
+
+    /* Init the rectangles */
+    game.rectangles[game.allocated_rectangles].width = 20;
+    game.rectangles[game.allocated_rectangles].height = 20;
+    game.rectangles[game.allocated_rectangles].x = game.screen_width / 2;
+    game.rectangles[game.allocated_rectangles].y = game.screen_height / 2;
+    game.rectangles[game.allocated_rectangles].color = { 0xFF, 0x00, 0xFF, 0xFF };
+    game.allocated_rectangles += 1;
 
     return 0;
 }
@@ -121,7 +130,10 @@ int handle_event(Game &game, SDL_Event &event) {
     return 0;
 }
 
-int update(Game &game) {
+int Game::update(float dt) {
+    Rectangle *r = &rectangles[0];
+    const float velocity = 10.f;
+    r->x += (velocity * dt);
     return 0;
 }
 
@@ -138,9 +150,15 @@ void Game::blit() const {
     SDL_RenderPresent(renderer);
 }
 
-int draw(Game &game) {
-    game.clear();
-    game.blit();
+int Game::draw() const {
+    clear();
+
+    /* Draw debug rectangle */
+    for (auto i=0; i<allocated_rectangles; i++) {
+        rectangles[i].draw(renderer);
+    }
+
+    blit();
     return 0;
 }
 
@@ -170,11 +188,11 @@ int mainloop(Game &game) {
 
         accumulator += dt;
         while (accumulator >= game.simulation_dt) {
-            CHECKED(update(game));
+            CHECKED(game.update(accumulator));
             accumulator -= game.simulation_dt;
         }
 
-        CHECKED(draw(game));
+        CHECKED(game.draw());
     }
 
     return 0;
