@@ -1,18 +1,6 @@
 #include "game.h"
+#include "key_press.h"
 #include "rectangle.h"
-
-enum struct KeyPress {
-    Default,
-    Up,
-    Down,
-    Left,
-    Right,
-    TOTAL,
-};
-
-uint32_t press_to_index(KeyPress press) {
-    return static_cast<uint32_t>(press);
-}
 
 static bool KeyMap[static_cast<uint32_t>(KeyPress::TOTAL)];
 
@@ -55,14 +43,6 @@ static int init(Game &game) {
         KeyMap[i] = false;
     }
 
-    /* Init the rectangles */
-    game.rectangles[game.allocated_rectangles].width = 20;
-    game.rectangles[game.allocated_rectangles].height = 20;
-    game.rectangles[game.allocated_rectangles].x = game.screen_width / 2;
-    game.rectangles[game.allocated_rectangles].y = game.screen_height / 2;
-    game.rectangles[game.allocated_rectangles].color = { 0xFF, 0x00, 0xFF, 0xFF };
-    game.allocated_rectangles += 1;
-
     return 0;
 }
 
@@ -79,6 +59,11 @@ int handle_event(Game &game, SDL_Event &event) {
             case SDLK_ESCAPE:
                 {
                 game.running = false;
+                break;
+                }
+            case SDLK_SPACE:
+                {
+                KeyMap[press_to_index(KeyPress::Fire)] = true;
                 break;
                 }
             case SDLK_UP:
@@ -104,6 +89,11 @@ int handle_event(Game &game, SDL_Event &event) {
         }
     } else if (event.type == SDL_KEYUP) {
         switch (event.key.keysym.sym) {
+            case SDLK_SPACE:
+                {
+                KeyMap[press_to_index(KeyPress::Fire)] = false;
+                break;
+                }
             case SDLK_UP:
                 {
                 KeyMap[press_to_index(KeyPress::Up)] = false;
@@ -131,9 +121,7 @@ int handle_event(Game &game, SDL_Event &event) {
 }
 
 int Game::update(float dt) {
-    Rectangle *r = &rectangles[0];
-    const float velocity = 10.f;
-    r->x += (velocity * dt);
+    gun.update(dt, KeyMap);
     return 0;
 }
 
@@ -152,11 +140,6 @@ void Game::blit() const {
 
 int Game::draw() const {
     clear();
-
-    /* Draw debug rectangle */
-    for (auto i=0; i<allocated_rectangles; i++) {
-        rectangles[i].draw(renderer);
-    }
 
     blit();
     return 0;

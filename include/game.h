@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <SDL.h>
 #include "color.h"
-#include "rectangle.h"
+#include "gun.h"
+#include "bullet.h"
 
 struct Game {
     const int screen_width = 640;
@@ -24,8 +25,7 @@ struct Game {
     bool running = true;
 
     /* Entities */
-    Rectangle rectangles[256];
-    int allocated_rectangles = 0;
+    Gun gun;
 };
 
 int mainloop(Game &game);
