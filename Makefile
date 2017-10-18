@@ -1,5 +1,8 @@
 SOURCES := $(wildcard src/*.cpp)
 OBJECTS := $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
+CFLAGS := $(shell pkg-config --cflags sdl2)
+LDFLAGS := $(shell pkg-config --libs sdl2)
+COMMON := -g -O2
 
 
 all: bin/game
@@ -8,10 +11,10 @@ run: bin/game
 	@$<
 
 bin/game: $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $@
+	$(CXX) $(LDFLAGS) $(COMMON) $(OBJECTS) -o $@
 
 obj/%.o: src/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) -c $(CFLAGS) $(COMMON) $< -o $@
 
 clean:
 	@rm -rf obj
