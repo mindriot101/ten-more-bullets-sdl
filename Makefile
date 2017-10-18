@@ -1,8 +1,9 @@
 SOURCES := $(wildcard src/*.cpp)
 OBJECTS := $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
-CFLAGS := -Iinclude $(shell pkg-config --cflags sdl2)
+DEPS := $(OBJECTS:.o=.d)
+CFLAGS := -Iinclude $(shell pkg-config --cflags sdl2) -MMD -MP
 LDFLAGS := $(shell pkg-config --libs sdl2)
-COMMON := -g -O2
+COMMON := -g -O2 -std=c++11
 
 
 all: bin/game
@@ -21,6 +22,8 @@ clean:
 	@mkdir obj
 	@rm -rf bin
 	@mkdir bin
+
+-include $(DEPS)
 
 .PHONY: all run clean
 
