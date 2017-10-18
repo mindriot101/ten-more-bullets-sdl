@@ -1,5 +1,20 @@
 #include "game.h"
 
+enum struct KeyPress {
+    Default,
+    Up,
+    Down,
+    Left,
+    Right,
+    TOTAL,
+};
+
+uint32_t press_to_index(KeyPress press) {
+    return static_cast<uint32_t>(press);
+}
+
+static bool KeyMap[static_cast<uint32_t>(KeyPress::TOTAL)];
+
 /* Static functions */
 static int init(Game &game) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -24,7 +39,20 @@ static int init(Game &game) {
             game.screen_height,
             SDL_WINDOW_SHOWN);
 
-    game.running = true;
+    if (game.window == nullptr) {
+        fprintf(stderr, "Error creating window. SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    game.renderer = SDL_CreateRenderer(game.window, -1, SDL_RENDERER_ACCELERATED);
+    if (game.renderer == nullptr) {
+        fprintf(stderr, "Error creating renderer. SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    for (uint32_t i=0; i<press_to_index(KeyPress::TOTAL); i++) {
+        KeyMap[i] = false;
+    }
 
     return 0;
 }
@@ -37,7 +65,59 @@ Game::~Game() {
 int handle_event(Game &game, SDL_Event &event) {
     if (event.type == SDL_QUIT) {
         game.running = false;
+    } else if (event.type == SDL_KEYDOWN) {
+        switch (event.key.keysym.sym) {
+            case SDLK_ESCAPE:
+                {
+                game.running = false;
+                break;
+                }
+            case SDLK_UP:
+                {
+                KeyMap[press_to_index(KeyPress::Up)] = true;
+                break;
+                }
+            case SDLK_DOWN:
+                {
+                KeyMap[press_to_index(KeyPress::Down)] = true;
+                break;
+                }
+            case SDLK_LEFT:
+                {
+                KeyMap[press_to_index(KeyPress::Left)] = true;
+                break;
+                }
+            case SDLK_RIGHT:
+                {
+                KeyMap[press_to_index(KeyPress::Right)] = true;
+                break;
+                }
+        }
+    } else if (event.type == SDL_KEYUP) {
+        switch (event.key.keysym.sym) {
+            case SDLK_UP:
+                {
+                KeyMap[press_to_index(KeyPress::Up)] = false;
+                break;
+                }
+            case SDLK_DOWN:
+                {
+                KeyMap[press_to_index(KeyPress::Down)] = false;
+                break;
+                }
+            case SDLK_LEFT:
+                {
+                KeyMap[press_to_index(KeyPress::Left)] = false;
+                break;
+                }
+            case SDLK_RIGHT:
+                {
+                KeyMap[press_to_index(KeyPress::Right)] = false;
+                break;
+                }
+        }
     }
+
     return 0;
 }
 
@@ -45,9 +125,25 @@ int update(Game &game) {
     return 0;
 }
 
+void Game::clear() const {
+    SDL_SetRenderDrawColor(renderer,
+            clear_color.r,
+            clear_color.g,
+            clear_color.b,
+            clear_color.a);
+    SDL_RenderClear(renderer);
+}
+
+void Game::blit() const {
+    SDL_RenderPresent(renderer);
+}
+
 int draw(Game &game) {
+    game.clear();
+    game.blit();
     return 0;
 }
+
 
 #define CHECKED(expr) { int status = expr; if (status != 0) return status; }
 
@@ -79,7 +175,6 @@ int mainloop(Game &game) {
         }
 
         CHECKED(draw(game));
-        SDL_Delay(1);
     }
 
     return 0;
