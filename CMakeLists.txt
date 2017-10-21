@@ -31,3 +31,6 @@ add_executable(${PROJECT} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT} PRIVATE include ${SDL2_INCLUDE_DIRS})
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${EXTRA_LIBS})
+
+# Add a run step
+add_custom_target(run ./${PROJECT} DEPENDS ${PROJECT})
