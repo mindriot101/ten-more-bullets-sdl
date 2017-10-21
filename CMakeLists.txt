@@ -10,11 +10,6 @@ include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
 pkg_search_module(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
 
-set(EXTRA_LIBS "")
-if (APPLE)
-    set(EXTRA_LIBS ${EXTRA_LIBS} "-framework Cocoa")
-endif()
-
 set(SOURCES 
     src/game.cpp
     src/gun.cpp
