@@ -11,7 +11,7 @@ Gun::Gun(int screen_width, int screen_height) {
     rect_geometry.w = 20;
     rect_geometry.h = 20;
     rect_geometry.x = screen_width / 2;
-    rect_geometry.y = screen_height / 2; // - rect_geometry.y / 2;
+    rect_geometry.y = screen_height - rect_geometry.h;
 
     printf("GEOMETRY: ");
     print_sdl_rect(&rect_geometry);
