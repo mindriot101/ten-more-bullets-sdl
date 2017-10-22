@@ -35,7 +35,7 @@ void Gun::update(float dt, bool *key_map) {
 
 void Gun::draw(SDL_Renderer *renderer) const {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawRect(renderer, &rect_geometry);
+    SDL_RenderFillRect(renderer, &rect_geometry);
 }
 
 void Gun::fire(float dt) {
