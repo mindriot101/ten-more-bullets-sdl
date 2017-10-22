@@ -23,6 +23,9 @@ void Gun::update(float dt, bool *key_map) {
     cleanup();
 }
 
+void Gun::draw(SDL_Renderer *renderer) const {
+}
+
 void Gun::fire(float dt) {
     printf("Firing\n");
     if (allocated_bullets == (N_BULLETS - 1)) {

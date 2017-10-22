@@ -6,9 +6,12 @@
 
 #define N_BULLETS 2
 
+struct SDL_Renderer;
+
 struct Gun {
     Gun();
     void update(float dt, bool *key_map);
+    void draw(SDL_Renderer *renderer) const;
     void fire(float dt);
     void cleanup();
 
