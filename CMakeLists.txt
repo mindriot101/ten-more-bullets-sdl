@@ -16,6 +16,7 @@ set(SOURCES
     src/key_press.cpp
     src/main.cpp
     src/rectangle.cpp
+    src/utils.cpp
     )
 
 set(HEADERS
@@ -25,6 +26,7 @@ set(HEADERS
     include/gun.h
     include/key_press.h
     include/rectangle.h
+    include/utils.h
     )
 
 add_executable(${PROJECT} ${SOURCES} ${HEADERS})

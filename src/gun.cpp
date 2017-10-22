@@ -1,10 +1,20 @@
 #include "gun.h"
+#include "utils.h"
 #include <cassert>
 
-Gun::Gun() {
+Gun::Gun(int screen_width, int screen_height) {
     for (auto i=0; i<N_BULLETS; i++) {
         allocated[i] = false;
     }
+
+    /* Set up rendering data */
+    rect_geometry.w = 20;
+    rect_geometry.h = 20;
+    rect_geometry.x = screen_width / 2;
+    rect_geometry.y = screen_height / 2; // - rect_geometry.y / 2;
+
+    printf("GEOMETRY: ");
+    print_sdl_rect(&rect_geometry);
 }
 
 void Gun::update(float dt, bool *key_map) {
@@ -24,6 +34,8 @@ void Gun::update(float dt, bool *key_map) {
 }
 
 void Gun::draw(SDL_Renderer *renderer) const {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawRect(renderer, &rect_geometry);
 }
 
 void Gun::fire(float dt) {

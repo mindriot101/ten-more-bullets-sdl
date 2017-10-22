@@ -9,7 +9,7 @@
 struct SDL_Renderer;
 
 struct Gun {
-    Gun();
+    Gun(int screen_width, int screen_height);
     void update(float dt, bool *key_map);
     void draw(SDL_Renderer *renderer) const;
     void fire(float dt);
@@ -21,6 +21,10 @@ struct Gun {
 
     bool fired_last_frame = false;
     int bullets_in_flight = 0;
+
+    /* Rendering data */
+    SDL_Rect rect_geometry;
+    RGBA color = {0xFF, 0x00, 0x00, 0xFF};
 };
 
 #endif // GUN_H_

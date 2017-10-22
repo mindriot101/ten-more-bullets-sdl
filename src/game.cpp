@@ -1,6 +1,7 @@
 #include "game.h"
 #include "key_press.h"
 #include "rectangle.h"
+#include <cstdlib>
 
 static bool KeyMap[static_cast<uint32_t>(KeyPress::TOTAL)];
 
@@ -42,6 +43,8 @@ static int init(Game &game) {
     for (uint32_t i=0; i<press_to_index(KeyPress::TOTAL); i++) {
         KeyMap[i] = false;
     }
+
+    game.gun = new Gun(game.screen_width, game.screen_height);
 
     return 0;
 }
@@ -121,7 +124,7 @@ int handle_event(Game &game, SDL_Event &event) {
 }
 
 int Game::update(float dt) {
-    gun.update(dt, KeyMap);
+    gun->update(dt, KeyMap);
     return 0;
 }
 
@@ -140,6 +143,8 @@ void Game::blit() const {
 
 int Game::draw() const {
     clear();
+
+    gun->draw(renderer);
 
     blit();
     return 0;

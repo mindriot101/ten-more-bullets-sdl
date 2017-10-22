@@ -25,7 +25,7 @@ struct Game {
     bool running = true;
 
     /* Entities */
-    Gun gun;
+    Gun *gun = nullptr;
 };
 
 int mainloop(Game &game);
